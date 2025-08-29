@@ -7,14 +7,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.example.java_backend.dto.AuthResponse;
-import com.example.java_backend.dto.LoginRequest;
-import com.example.java_backend.dto.RegisterRequest;
+import com.example.java_backend.dto.auth.AuthResponse;
+import com.example.java_backend.dto.auth.LoginRequest;
+import com.example.java_backend.dto.auth.RegisterRequest;
 import com.example.java_backend.service.AuthService;
 
 @RestController
 @RequestMapping("/api/auth")
-@CrossOrigin(origins = "http://localhost:8080") // Vite frontend
+//@CrossOrigin(origins = {"http://localhost:8080" ,"http://10.57.131.221:8080"}) // Vite frontend
+@CrossOrigin(origins = {
+    "http://localhost:8080",
+    "http://10.57.131.221:8080"
+})
 public class AuthController {
 
     @Autowired private AuthService authService;

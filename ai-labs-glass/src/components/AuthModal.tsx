@@ -12,7 +12,9 @@ interface AuthModalProps {
   onClose: () => void;
 }
 
-const API_URL = "http://localhost:5000/api/auth"; // Change if needed
+//const API_URL = "http://localhost:5000/api/auth"; // Change if needed
+const API_URL = "http://10.57.131.221:5000/api/auth"; 
+
 
 const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +44,7 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
 
       // Save token & user
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify({ fullName: data.fullName, email: data.email }));
+      localStorage.setItem("user", JSON.stringify({ id: data.id, fullName: data.fullName, email: data.email }));
 
       alert("✅ Login successful!");
       onClose();

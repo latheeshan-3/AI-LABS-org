@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import com.example.java_backend.dto.AuthResponse;
-import com.example.java_backend.dto.LoginRequest;
-import com.example.java_backend.dto.RegisterRequest;
+import com.example.java_backend.dto.auth.AuthResponse;
+import com.example.java_backend.dto.auth.LoginRequest;
+import com.example.java_backend.dto.auth.RegisterRequest;
 import com.example.java_backend.model.User;
 import com.example.java_backend.repository.UserRepository;
 
@@ -30,7 +30,7 @@ public class AuthService {
         userRepository.save(user);
 
         String token = jwtService.generateToken(user.getEmail());
-        return new AuthResponse(token, user.getFullName(), user.getEmail());
+        return new AuthResponse(token, user.getId(), user.getFullName(), user.getEmail());
     }
 
     public AuthResponse login(LoginRequest req) {
@@ -42,6 +42,6 @@ public class AuthService {
         }
 
         String token = jwtService.generateToken(user.getEmail());
-        return new AuthResponse(token, user.getFullName(), user.getEmail());
+        return new AuthResponse(token, user.getId(), user.getFullName(), user.getEmail());
     }
 }
