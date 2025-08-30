@@ -9,6 +9,9 @@ import ContactUs from "./pages/ContactUs";
 import OpenServices from "./pages/OpenServices";
 import NotFound from "./pages/NotFound";
 import AccountPage from "./pages/AccountPage";
+import AdminPage from "./pages/AdminPage";
+import AdminCoursesPage from "./pages/AdminCoursesPage";
+import CoursesSection from "./components/CoursesSection";
 
 const queryClient = new QueryClient();
 
@@ -25,7 +28,10 @@ const App = () => (
           <Route path="/services" element={<OpenServices />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
            <Route path="/account" element={<AccountPage />} />
+           <Route path="/admin" element={<AdminPage/>} />
           <Route path="*" element={<NotFound />} />
+          <Route path="/admincourse" element={<AdminCoursesPage/>}/>
+            <Route path="/courses" element={<CoursesSection />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

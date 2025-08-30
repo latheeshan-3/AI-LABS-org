@@ -10,4 +10,5 @@ public class AuthResponse {
     private final long  id;
     private final String fullName;
     private final String email;
+    private final String role;  // ✅ Add this
 }

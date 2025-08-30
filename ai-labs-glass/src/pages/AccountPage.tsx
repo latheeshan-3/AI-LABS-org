@@ -623,6 +623,14 @@ export default function Dashboard() {
                   <Settings className="mr-2 h-4 w-4" />
                   Settings
                 </Button>
+
+                <Button
+  onClick={() => navigate("/courses")}
+  className="flex-1 md:flex-none bg-blue-600 text-white hover:bg-blue-700"
+>
+  View Courses
+</Button>
+
               </div>
             </motion.div>
           )}

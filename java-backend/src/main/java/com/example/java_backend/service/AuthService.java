@@ -26,11 +26,12 @@ public class AuthService {
         user.setFullName(req.getFullName());
         user.setEmail(req.getEmail());
         user.setPassword(passwordEncoder.encode(req.getPassword()));
+        user.setRole("USER"); // ✅ new users are USER by default
 
         userRepository.save(user);
 
         String token = jwtService.generateToken(user.getEmail());
-        return new AuthResponse(token, user.getId(), user.getFullName(), user.getEmail());
+        return new AuthResponse(token, user.getId(), user.getFullName(), user.getEmail(), user.getRole());
     }
 
     public AuthResponse login(LoginRequest req) {
@@ -42,6 +43,18 @@ public class AuthService {
         }
 
         String token = jwtService.generateToken(user.getEmail());
-        return new AuthResponse(token, user.getId(), user.getFullName(), user.getEmail());
+        return new AuthResponse(token, user.getId(), user.getFullName(), user.getEmail(), user.getRole());
+    }
+
+    // ✅ Preload an Admin account if not exists
+    public void createDefaultAdmin() {
+        if (!userRepository.existsByEmail("admin@email.com")) {
+            User admin = new User();
+            admin.setFullName("Admin User");
+            admin.setEmail("admin@email.com");
+            admin.setPassword(passwordEncoder.encode("admin123"));
+            admin.setRole("ADMIN"); // ✅ admin role
+            userRepository.save(admin);
+        }
     }
 }

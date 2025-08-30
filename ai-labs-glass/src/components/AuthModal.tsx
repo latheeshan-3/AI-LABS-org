@@ -44,11 +44,16 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
 
       // Save token & user
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify({ id: data.id, fullName: data.fullName, email: data.email }));
+      localStorage.setItem("user", JSON.stringify({ id: data.id, fullName: data.fullName, email: data.email,  role: data.role  }));
 
-      alert("✅ Login successful!");
-      onClose();
-      navigate("/account");
+      //alert("✅ Login successful!");
+      //onClose();
+      //navigate("/account");
+      if (data.role === "ADMIN") {
+    navigate("/admin"); // ✅ redirect to admin page
+  } else {
+    navigate("/account");
+  }
     } catch (err: any) {
       alert(`❌ ${err.message}`);
     } finally {
@@ -78,7 +83,7 @@ const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
 
       // Save token & user (auto-login after registration)
       localStorage.setItem("token", data.token);
-      localStorage.setItem("user", JSON.stringify({ fullName: data.fullName, email: data.email }));
+      localStorage.setItem("user", JSON.stringify({id: data.id, fullName: data.fullName, email: data.email,role: data.role  }));
 
       alert("✅ Account created successfully!");
       onClose();

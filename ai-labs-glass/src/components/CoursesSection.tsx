@@ -1,78 +1,107 @@
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Star, MapPin, Monitor, Users } from "lucide-react";
 import { motion } from "framer-motion";
+import AuthModal from "../components/AuthModal";
+
+interface Course {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  mode: string;
+  rating: number;
+  reviews: number;
+  price: string;
+  level: string;
+  totalParticipants: number;
+  certificateProviders: string;
+  promoCode?: string;
+  demoCertificate?: string;
+}
 
 const CoursesSection = () => {
-  const courses = [
-    {
-      id: 1,
-      title: "AI Fundamentals",
-      description: "Master the basics of artificial intelligence and machine learning",
-      image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400",
-      mode: "Online",
-      rating: 4.8,
-      reviews: 1247,
-      price: "$299",
-      level: "Beginner"
-    },
-    {
-      id: 2,
-      title: "Deep Learning Mastery",
-      description: "Advanced neural networks and deep learning techniques",
-      image: "https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400",
-      mode: "Both",
-      rating: 4.9,
-      reviews: 892,
-      price: "$599",
-      level: "Advanced"
-    },
-    {
-      id: 3,
-      title: "Computer Vision",
-      description: "Image processing and computer vision with practical projects",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400",
-      mode: "Physical",
-      rating: 4.7,
-      reviews: 654,
-      price: "$449",
-      level: "Intermediate"
-    },
-    {
-      id: 4,
-      title: "Natural Language Processing",
-      description: "Text analysis, chatbots, and language understanding",
-      image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=400",
-      mode: "Online",
-      rating: 4.6,
-      reviews: 543,
-      price: "$399",
-      level: "Intermediate"
-    },
-    {
-      id: 5,
-      title: "AI Ethics & Society",
-      description: "Understanding the ethical implications of AI technology",
-      image: "https://images.unsplash.com/photo-1573164713712-03790a178651?w=400",
-      mode: "Both",
-      rating: 4.5,
-      reviews: 321,
-      price: "$199",
-      level: "Beginner"
-    },
-    {
-      id: 6,
-      title: "Robotics & AI",
-      description: "Combining robotics with AI for intelligent automation",
-      image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=400",
-      mode: "Physical",
-      rating: 4.8,
-      reviews: 789,
-      price: "$799",
-      level: "Advanced"
+  const [courses, setCourses] = useState<Course[]>([]);
+  const [bookedCourseIds, setBookedCourseIds] = useState<number[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [showLogin, setShowLogin] = useState(false);
+
+  const storedUser = localStorage.getItem("user");
+  const userId = storedUser ? JSON.parse(storedUser).id : null;
+
+  useEffect(() => {
+    const fetchCourses = async () => {
+      try {
+        const res = await fetch("http://10.57.131.221:5000/api/courses");
+        if (!res.ok) throw new Error("Failed to fetch courses");
+        const data: Course[] = await res.json();
+        setCourses(data);
+      } catch (err) {
+        console.error("Error fetching courses:", err);
+      }
+    };
+
+    const fetchBookedCourses = async () => {
+      if (!userId) return;
+      try {
+        const res = await fetch(`http://10.57.131.221:5000/api/user-selected-courses/user/${userId}`);
+        if (!res.ok) throw new Error("Failed to fetch booked courses");
+        const booked: { courseId: number }[] = await res.json();
+        setBookedCourseIds(booked.map(b => b.courseId));
+      } catch (err) {
+        console.error("Error fetching booked courses:", err);
+      }
+    };
+
+    fetchCourses();
+    fetchBookedCourses();
+  }, [userId]);
+
+  const handleBookCourse = async (course: Course) => {
+    if (!userId) {
+      setShowLogin(true);
+      return;
     }
-  ];
+
+    if (bookedCourseIds.includes(course.id)) {
+      setMessage("❌ You have already enrolled in this course");
+      return;
+    }
+
+    setLoading(true);
+    setMessage(null);
+
+    try {
+      const res = await fetch("http://10.57.131.221:5000/api/user-selected-courses/book", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId,
+          courseId: course.id,
+          completionStatus: "ENROLLED",
+          selectedCourseTitle: course.title,
+          certificateUrl: null,
+          enrolledDate: new Date().toISOString().split("T")[0],
+        }),
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Failed to book course");
+      }
+
+      setMessage(`✅ You successfully booked: ${course.title}`);
+      setBookedCourseIds(prev => [...prev, course.id]); // mark as booked
+    } catch (err: any) {
+      console.error(err);
+      setMessage(`❌ ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const getModeIcon = (mode: string) => {
     switch (mode) {
@@ -105,7 +134,6 @@ const CoursesSection = () => {
   return (
     <section id="courses" className="py-20 relative">
       <div className="container mx-auto px-6">
-        {/* Section Header */}
         <motion.div
           className="text-center mb-16"
           initial={{ opacity: 0, y: 40 }}
@@ -119,72 +147,90 @@ const CoursesSection = () => {
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Discover our comprehensive AI courses designed for every skill level
           </p>
+          {message && <p className="mt-4 text-green-400">{message}</p>}
         </motion.div>
 
-        {/* Courses Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {courses.map((course, index) => (
-            <motion.div
-              key={course.id}
-              initial={{ opacity: 0, y: 40, scale: 0.95 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
-              viewport={{ once: true, amount: 0.2 }}
-              transition={{ duration: 0.6, delay: index * 0.2 }}
-            >
-              <Card className="course-card overflow-hidden group hover:scale-105 transition-all duration-300">
-                <div className="relative">
-                  <img
-                    src={course.image}
-                    alt={course.title}
-                    className="w-full h-48 object-cover"
-                  />
-                  <div className="absolute top-4 right-4">
-                    <Badge className={getModeColor(course.mode)}>
-                      {getModeIcon(course.mode)}
-                      <span className="ml-1">{course.mode}</span>
-                    </Badge>
-                  </div>
-                  <div className="absolute top-4 left-4">
-                    <Badge variant="secondary" className="bg-black/50 text-white border-0">
-                      {course.level}
-                    </Badge>
-                  </div>
-                </div>
-                
-                <CardHeader>
-                  <CardTitle className="text-xl font-bold text-white">
-                    {course.title}
-                  </CardTitle>
-                  <p className="text-muted-foreground">
-                    {course.description}
-                  </p>
-                </CardHeader>
-                
-                <CardContent className="pt-0">
-                  <div className="flex items-center gap-2 mb-4">
-                    <div className="flex items-center">{renderStars(course.rating)}</div>
-                    <span className="text-sm text-yellow-400 font-medium">
-                      {course.rating}
-                    </span>
-                    <span className="text-sm text-muted-foreground">
-                      ({course.reviews} reviews)
-                    </span>
+          {courses.map((course, index) => {
+            const isBooked = bookedCourseIds.includes(course.id);
+
+            return (
+              <motion.div
+                key={course.id}
+                initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.6, delay: index * 0.2 }}
+              >
+                <Card className={`course-card overflow-hidden group transition-all duration-300 ${isBooked ? "opacity-60" : "hover:scale-105"}`}>
+                  <div className="relative">
+                    <img src={course.image} alt={course.title} className="w-full h-48 object-cover" />
+                    <div className="absolute top-4 right-4">
+                      <Badge className={getModeColor(course.mode)}>
+                        {getModeIcon(course.mode)}
+                        <span className="ml-1">{course.mode}</span>
+                      </Badge>
+                    </div>
+                    <div className="absolute top-4 left-4">
+                      <Badge variant="secondary" className="bg-black/50 text-white border-0">
+                        {course.level}
+                      </Badge>
+                    </div>
                   </div>
                   
-                  <div className="flex items-center justify-between">
-                    <div className="text-2xl font-bold text-primary-glow">
-                      {course.price}
+                  <CardHeader>
+                    <CardTitle className="text-xl font-bold text-white">{course.title}</CardTitle>
+                    <p className="text-muted-foreground">{course.description}</p>
+                  </CardHeader>
+                  
+                  <CardContent className="pt-0">
+                    <div className="flex items-center gap-2 mb-4">
+                      <div className="flex items-center">{renderStars(course.rating)}</div>
+                      <span className="text-sm text-yellow-400 font-medium">{course.rating}</span>
+                      <span className="text-sm text-muted-foreground">({course.reviews} reviews)</span>
                     </div>
-                    <Button className="glow-button">
-                      Book Course
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </motion.div>
-          ))}
+                    
+                    <p className="text-sm text-muted-foreground mb-1">
+                      👥 {course.totalParticipants} participants
+                    </p>
+                    <p className="text-sm text-muted-foreground mb-1">
+                      🎓 Certificate by: {course.certificateProviders}
+                    </p>
+                    {course.promoCode && (
+                      <p className="text-sm text-green-400 mb-1">
+                        💸 Use promo code: <strong>{course.promoCode}</strong>
+                      </p>
+                    )}
+                    {course.demoCertificate && (
+                      <a
+                        href={course.demoCertificate}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sm text-blue-400 underline mb-2 block"
+                      >
+                        📄 View Demo Certificate
+                      </a>
+                    )}
+
+                    <div className="flex items-center justify-between">
+                      <div className="text-2xl font-bold text-primary-glow">{course.price}</div>
+                      <Button
+                        className="glow-button"
+                        onClick={() => handleBookCourse(course)}
+                        disabled={loading || isBooked}
+                      >
+                        {isBooked ? "Booked" : loading ? "Booking..." : "Book Course"}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            );
+          })}
         </div>
       </div>
+
+      <AuthModal isOpen={showLogin} onClose={() => setShowLogin(false)} />
     </section>
   );
 };
