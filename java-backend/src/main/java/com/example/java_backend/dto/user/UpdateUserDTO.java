@@ -15,4 +15,6 @@ public class UpdateUserDTO {
     private String nic;
     private String sex;
     private LocalDate dateOfBirth;
+    private String accountStatus;
+    public String getaccountStatus;
 }

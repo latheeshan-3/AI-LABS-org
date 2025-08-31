@@ -15,6 +15,7 @@ public class UserMapper {
         dto.setNic(user.getNic());
         dto.setSex(user.getSex());
         dto.setDateOfBirth(user.getDateOfBirth());
+        dto.setAccountStatus(user.getAccountStatus());
         return dto;
     }
 }

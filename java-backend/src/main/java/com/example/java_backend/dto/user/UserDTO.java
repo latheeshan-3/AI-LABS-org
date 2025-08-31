@@ -17,4 +17,5 @@ public class UserDTO {
     private String nic;
     private String sex;
     private LocalDate dateOfBirth;
+    private String accountStatus;
 }

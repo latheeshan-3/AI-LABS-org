@@ -12,6 +12,7 @@ import AccountPage from "./pages/AccountPage";
 import AdminPage from "./pages/AdminPage";
 import AdminCoursesPage from "./pages/AdminCoursesPage";
 import CoursesSection from "./components/CoursesSection";
+import ManageUsersPage from "@/pages/ManageUsersPage";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +33,7 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
           <Route path="/admincourse" element={<AdminCoursesPage/>}/>
             <Route path="/courses" element={<CoursesSection />} />
+             <Route path="/admin/users" element={<ManageUsersPage />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

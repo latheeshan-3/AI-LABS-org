@@ -26,6 +26,8 @@ public class UserSelectedCourseService {
         this.courseRepository = courseRepository;
     }
 
+    
+
    @Transactional
 public UserSelectedCourse bookCourse(UserSelectedCourseRequest request) {
     User user = userRepository.findById(request.getUserId())
@@ -54,5 +56,16 @@ public UserSelectedCourse bookCourse(UserSelectedCourseRequest request) {
 
     return userSelectedCourseRepository.save(userSelectedCourse);
 }
+
+// ✅ Unenroll user from a course
+    @Transactional
+    public boolean unenrollCourse(Long userId, Long courseId) {
+        return userSelectedCourseRepository.findByUserIdAndCourseId(userId, courseId)
+                .map(enrollment -> {
+                    userSelectedCourseRepository.delete(enrollment);
+                    return true;
+                })
+                .orElse(false);
+    }
 
 }

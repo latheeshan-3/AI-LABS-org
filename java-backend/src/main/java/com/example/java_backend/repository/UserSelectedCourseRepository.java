@@ -11,4 +11,5 @@ import com.example.java_backend.model.UserSelectedCourse;
 public interface UserSelectedCourseRepository extends JpaRepository<UserSelectedCourse, Long>
  {  Optional<UserSelectedCourse> findByUserIdAndCourseId(Long userId, Long courseId);
       List<UserSelectedCourse> findByUser(User user);
+    void deleteByUserIdAndCourseId(Long userId, Long courseId);
 } 

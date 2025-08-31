@@ -30,6 +30,7 @@ public class UserService {
             user.setNic(updatedUser.getNic());
             user.setSex(updatedUser.getSex());
             user.setDateOfBirth(updatedUser.getDateOfBirth());
+            user.setAccountStatus(updatedUser.getaccountStatus);
             return UserMapper.toDTO(userRepository.save(user));
         }).orElseThrow(() -> new RuntimeException("User not found with id " + id));
     }

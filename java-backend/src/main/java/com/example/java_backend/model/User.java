@@ -38,5 +38,7 @@ public class User {
      // ✅ Role: USER or ADMIN
     private String role = "USER"; 
 
+    private String accountStatus = "ACTIVE"; // values: "ACTIVE", "SUSPENDED"
+
     // Student ID will map to the same as `id` (you can handle it in DTO or frontend)
 }

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge"; // ✅ add badge
 import {
   Select,
   SelectContent,
@@ -20,6 +21,7 @@ import {
   Edit,
   Save,
   BookOpen,
+   AlertTriangle,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { AnimatePresence } from "framer-motion";
@@ -34,6 +36,7 @@ interface UserDTO {
   nic?: string;
   sex?: string;
   dateOfBirth?: string;
+  accountStatus?:string,
 }
 
 interface UpdateUserDTO {
@@ -44,6 +47,7 @@ interface UpdateUserDTO {
   nic?: string;
   sex?: string;
   dateOfBirth?: string;
+  accountStatus?:string,
 }
 
 interface EnrolledCourse {
@@ -100,6 +104,7 @@ export default function Dashboard() {
           nic: fullUser.nic || "",
           sex: fullUser.sex || "",
           dateOfBirth: fullUser.dateOfBirth || "",
+          accountStatus:fullUser.accountStatus || "",
         });
         localStorage.setItem("user", JSON.stringify(fullUser));
       } catch (err) {
@@ -182,7 +187,46 @@ export default function Dashboard() {
     );
   }
 
+  const isSuspended = user.accountStatus === "SUSPENDED";
+
   return (
+
+    <div className="relative min-h-screen bg-gray-50 p-6">
+      {/* ✅ Show account status badge */}
+      <div className="flex items-center justify-between">
+        <h1 className="text-xl font-bold">
+          {getGreeting()}, {user.fullName}
+        </h1>
+        {user.accountStatus === "ACTIVE" ? (
+          <Badge className="bg-green-600 text-white">Active</Badge>
+        ) : (
+          <Badge className="bg-yellow-500 text-black flex items-center gap-1">
+            <AlertTriangle size={14} /> Suspended
+          </Badge>
+        )}
+      </div>
+
+      {/* ✅ Warning Overlay when Suspended */}
+      {isSuspended && (
+        <motion.div
+          className="absolute inset-0 bg-black bg-opacity-70 flex flex-col items-center justify-center z-50"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+        >
+          <div className="bg-white p-6 rounded-xl shadow-xl text-center max-w-md">
+            <AlertTriangle className="text-yellow-500 mx-auto mb-3" size={40} />
+            <h2 className="text-xl font-bold text-red-600">Account Suspended</h2>
+            <p className="text-gray-600 mt-2">
+              Your account has been suspended. Please contact the administrator
+              for more details.
+            </p>
+            <Button className="mt-4" onClick={handleLogout}>
+              Logout
+            </Button>
+          </div>
+        </motion.div>
+      )}
+
     <div className="min-h-screen bg-gray-50">
       {/* Mobile Header */}
       <header className="bg-white shadow-sm border-b px-4 py-3 md:hidden">
@@ -379,30 +423,70 @@ export default function Dashboard() {
               </div>
             ) : (
               <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {enrolledCourses.map((enrolled) => (
-                  <motion.li
-                    key={enrolled.id}
-                    className="bg-white border rounded-xl p-5 shadow-sm cursor-pointer hover:shadow-md hover:border-blue-500 transition"
-                    whileHover={{ scale: 1.02 }}
-                    onClick={() => navigate(`/courses/${enrolled.course.id}`)}
-                  >
-                    <h3 className="text-lg font-semibold text-blue-700">
-                      {enrolled.course.title}
-                    </h3>
-                    {enrolled.course.description && (
-                      <p className="text-gray-600 text-sm mt-1 line-clamp-2">
-                        {enrolled.course.description}
-                      </p>
-                    )}
-                    <p className="text-xs text-gray-500 mt-3">
-                      Enrolled on: {new Date(enrolled.enrolledDate).toLocaleDateString()}
-                    </p>
-                    <p className="text-xs text-gray-500 mt-3">
-                       completionStatus: {enrolled. completionStatus}
-                    </p>
-                  </motion.li>
-                ))}
-              </ul>
+  {enrolledCourses.map((enrolled) => (
+    <motion.li
+      key={enrolled.id}
+      className="bg-white border rounded-xl p-5 shadow-sm hover:shadow-md hover:border-blue-500 transition relative"
+      whileHover={{ scale: 1.02 }}
+    >
+      {/* Course Title */}
+      <h3 className="text-lg font-semibold text-blue-700">
+        {enrolled.course.title}
+      </h3>
+
+      {/* Course Description */}
+      {enrolled.course.description && (
+        <p className="text-gray-600 text-sm mt-1 line-clamp-2">
+          {enrolled.course.description}
+        </p>
+      )}
+
+      {/* Enrollment Info */}
+      <p className="text-xs text-gray-500 mt-3">
+        Enrolled on:{" "}
+        {new Date(enrolled.enrolledDate).toLocaleDateString()}
+      </p>
+      <p className="text-xs text-gray-500 mt-1">
+        Status: {enrolled.completionStatus}
+      </p>
+
+      {/* ✅ Unenroll Button */}
+      <Button
+        onClick={async (e) => {
+          e.stopPropagation(); // prevent navigating into the course
+          if (!user) return;
+
+          const confirmUnenroll = window.confirm(
+            `Are you sure you want to unenroll from "${enrolled.course.title}"?`
+          );
+          if (!confirmUnenroll) return;
+
+          try {
+            const res = await fetch(
+              `http://10.57.131.221:5000/api/user-selected-courses/${user.id}/${enrolled.course.id}`,
+              { method: "DELETE" }
+            );
+
+            if (res.ok) {
+              // remove unenrolled course from UI
+              setEnrolledCourses((prev) =>
+                prev.filter((c) => c.course.id !== enrolled.course.id)
+              );
+            } else {
+              console.error("Failed to unenroll:", await res.text());
+            }
+          } catch (err) {
+            console.error("Error during unenroll:", err);
+          }
+        }}
+        className="mt-4 bg-red-600 text-white hover:bg-red-700"
+      >
+        Unenroll
+      </Button>
+    </motion.li>
+  ))}
+</ul>
+
             )}
           </motion.div>
 
@@ -423,6 +507,8 @@ export default function Dashboard() {
                   <div>
                     <h3 className="text-white font-bold text-lg md:text-xl">{user.fullName}</h3>
                     <p className="text-blue-100 text-sm">{user.email}</p>
+                     <p className="text-blue-100 text-sm">{user.accountStatus}</p>
+
                   </div>
                 </div>
                 <Button
@@ -635,6 +721,7 @@ export default function Dashboard() {
           </motion.div>
         </main>
       </div>
+    </div>
     </div>
   );
 }

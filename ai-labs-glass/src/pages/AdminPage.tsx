@@ -24,7 +24,7 @@ export default function AdminPage() {
     const parsedUser: User = JSON.parse(storedUser);
 
     if (parsedUser.role !== "ADMIN") {
-      navigate("/account"); // ❌ non-admins redirected
+      navigate("/account"); // non-admins redirected
       return;
     }
 
@@ -73,7 +73,7 @@ export default function AdminPage() {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground mb-3">
-                  View and manage registered users.
+                  View and manage registered users and their enrolled courses.
                 </p>
                 <Button onClick={() => navigate("/admin/users")}>
                   Go to Users
