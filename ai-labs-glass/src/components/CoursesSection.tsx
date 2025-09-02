@@ -31,11 +31,12 @@ const CoursesSection = () => {
 
   const storedUser = localStorage.getItem("user");
   const userId = storedUser ? JSON.parse(storedUser).id : null;
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; 
 
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const res = await fetch("http://10.57.131.221:5000/api/courses");
+        const res = await fetch(`${API_BASE_URL}/courses`);
         if (!res.ok) throw new Error("Failed to fetch courses");
         const data: Course[] = await res.json();
         setCourses(data);
@@ -47,7 +48,7 @@ const CoursesSection = () => {
     const fetchBookedCourses = async () => {
       if (!userId) return;
       try {
-        const res = await fetch(`http://10.57.131.221:5000/api/user-selected-courses/user/${userId}`);
+        const res = await fetch(`${API_BASE_URL}/user-selected-courses/user/${userId}`);
         if (!res.ok) throw new Error("Failed to fetch booked courses");
         const booked: { courseId: number }[] = await res.json();
         setBookedCourseIds(booked.map(b => b.courseId));
@@ -75,7 +76,7 @@ const CoursesSection = () => {
     setMessage(null);
 
     try {
-      const res = await fetch("http://10.57.131.221:5000/api/user-selected-courses/book", {
+      const res = await fetch(`${API_BASE_URL}/user-selected-courses/book`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

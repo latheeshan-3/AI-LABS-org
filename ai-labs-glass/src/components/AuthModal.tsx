@@ -13,8 +13,9 @@ interface AuthModalProps {
 }
 
 //const API_URL = "http://localhost:5000/api/auth"; // Change if needed
-const API_URL = "http://10.57.131.221:5000/api/auth"; 
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const API_URL =  `${API_BASE_URL}/auth`; 
 
 const AuthModal = ({ isOpen, onClose }: AuthModalProps) => {
   const [isLoading, setIsLoading] = useState(false);

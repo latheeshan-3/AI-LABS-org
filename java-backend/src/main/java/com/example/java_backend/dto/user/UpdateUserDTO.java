@@ -17,4 +17,7 @@ public class UpdateUserDTO {
     private LocalDate dateOfBirth;
     private String accountStatus;
     public String getaccountStatus;
+    private String studentId;
+    private String batchId;
+
 }

@@ -18,4 +18,6 @@ public class UserDTO {
     private String sex;
     private LocalDate dateOfBirth;
     private String accountStatus;
+    private String studentId;
+    private String batchId;
 }

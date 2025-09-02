@@ -4,11 +4,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.example.java_backend.dto.admin.AdminUserDTO;
 import com.example.java_backend.repository.UserRepository;
 import com.example.java_backend.repository.UserSelectedCourseRepository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AdminUserService {
@@ -32,6 +32,8 @@ public class AdminUserService {
                         user.getHometown(),
                         user.getStatus(),
                         user.getAccountStatus(),
+                        user.getStudentId(),
+                        user.getBatchId(),
                         userSelectedCourseRepository.findByUser(user)
                 ))
                 .collect(Collectors.toList());
@@ -51,7 +53,10 @@ public AdminUserDTO updateAccountStatus(Long userId, String accountStatus) {
                         user.getContactNumber(),
                         user.getHometown(),
                         user.getStatus(),
-                        user.getAccountStatus(),   // ✅ include new field
+                        user.getAccountStatus(), 
+                        user.getStudentId(),
+                        user.getBatchId(),
+                          // ✅ include new field
                         userSelectedCourseRepository.findByUser(user)
                 );
             })

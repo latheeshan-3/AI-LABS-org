@@ -41,4 +41,7 @@ public class User {
     private String accountStatus = "ACTIVE"; // values: "ACTIVE", "SUSPENDED"
 
     // Student ID will map to the same as `id` (you can handle it in DTO or frontend)
+
+     private String studentId;
+     private String batchId;
 }

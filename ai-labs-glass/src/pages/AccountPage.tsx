@@ -37,6 +37,8 @@ interface UserDTO {
   sex?: string;
   dateOfBirth?: string;
   accountStatus?:string,
+  studentId?: string;
+  batchId?: string;
 }
 
 interface UpdateUserDTO {
@@ -48,6 +50,9 @@ interface UpdateUserDTO {
   sex?: string;
   dateOfBirth?: string;
   accountStatus?:string,
+  studentId?: string;
+  batchId?: string;
+  
 }
 
 interface EnrolledCourse {
@@ -62,6 +67,13 @@ interface EnrolledCourse {
   };
 }
 
+interface Announcement {
+  id: number;
+  title: string;
+  message: string;
+  createdAt: string;
+}
+
 export default function Dashboard() {
   const [user, setUser] = useState<UserDTO | null>(null);
   const [editing, setEditing] = useState(false);
@@ -73,6 +85,8 @@ export default function Dashboard() {
     nic: "",
     sex: "",
     dateOfBirth: "",
+    studentId: "",
+    batchId: "",
   });
 
   const [enrolledCourses, setEnrolledCourses] = useState<EnrolledCourse[]>([]);
@@ -80,6 +94,12 @@ export default function Dashboard() {
 
   const [showSidebar, setShowSidebar] = useState(false);
   const navigate = useNavigate();
+
+  const [announcements, setAnnouncements] = useState<Announcement[]>([]);
+  const [loadingAnnouncements, setLoadingAnnouncements] = useState(true);
+
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -90,8 +110,7 @@ export default function Dashboard() {
 
     const fetchUserByEmail = async () => {
       try {
-        const res = await fetch(
-          `http://10.57.131.221:5000/api/users/${parsedUser.email}`
+        const res = await fetch(`${API_BASE_URL}/users/${parsedUser.email}`
         );
         if (!res.ok) throw new Error("Failed to fetch user details");
         const fullUser: UserDTO = await res.json();
@@ -105,6 +124,8 @@ export default function Dashboard() {
           sex: fullUser.sex || "",
           dateOfBirth: fullUser.dateOfBirth || "",
           accountStatus:fullUser.accountStatus || "",
+          studentId: fullUser.studentId || "",
+          batchId: fullUser.batchId || "",
         });
         localStorage.setItem("user", JSON.stringify(fullUser));
       } catch (err) {
@@ -116,13 +137,33 @@ export default function Dashboard() {
     fetchUserByEmail();
   }, [navigate]);
 
+  // Fetch announcements for this user
+  useEffect(() => {
+    const fetchAnnouncements = async () => {
+      if (!user?.id) return;
+      try {
+        const res = await fetch(
+          `${API_BASE_URL}/announcements/user/${user.id}`
+        );
+        if (!res.ok) throw new Error("Failed to fetch announcements");
+        const data: Announcement[] = await res.json();
+        setAnnouncements(data);
+      } catch (err) {
+        console.error("Error fetching announcements:", err);
+      } finally {
+        setLoadingAnnouncements(false);
+      }
+    };
+    fetchAnnouncements();
+  }, [user]);
+
   // Fetch enrolled courses once user is loaded
   useEffect(() => {
     const fetchEnrolledCourses = async () => {
       if (!user?.id) return;
       try {
         const res = await fetch(
-          `http://10.57.131.221:5000/api/user-courses/${user.id}`
+          `${API_BASE_URL}/user-courses/${user.id}`
         );
         if (!res.ok) throw new Error("Failed to fetch enrolled courses");
         const data: EnrolledCourse[] = await res.json();
@@ -151,7 +192,7 @@ export default function Dashboard() {
 
     try {
       const res = await fetch(
-        `http://10.57.131.221:5000/api/users/${user.id}`,
+        `${API_BASE_URL}/users/${user.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
@@ -195,7 +236,7 @@ export default function Dashboard() {
       {/* ✅ Show account status badge */}
       <div className="flex items-center justify-between">
         <h1 className="text-xl font-bold">
-          {getGreeting()}, {user.fullName}
+          {getGreeting()}, {user.fullName}, {user.batchId}, {user.studentId}
         </h1>
         {user.accountStatus === "ACTIVE" ? (
           <Badge className="bg-green-600 text-white">Active</Badge>
@@ -390,7 +431,7 @@ export default function Dashboard() {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-2xl md:text-3xl font-bold text-blue-700 mb-2">
-              {getGreeting()}, {user.fullName}! 👋
+              {getGreeting()}, {user.fullName}! 👋 {user.batchId}, {user.studentId}
             </h1>
             <p className="text-gray-600">Welcome to your dashboard</p>
           </motion.div>
@@ -463,7 +504,7 @@ export default function Dashboard() {
 
           try {
             const res = await fetch(
-              `http://10.57.131.221:5000/api/user-selected-courses/${user.id}/${enrolled.course.id}`,
+              `${API_BASE_URL}/user-selected-courses/${user.id}/${enrolled.course.id}`,
               { method: "DELETE" }
             );
 
@@ -488,7 +529,43 @@ export default function Dashboard() {
 </ul>
 
             )}
-          </motion.div>
+          </motion.div>  
+
+           {/* Announcements Section */}
+  <motion.div
+    className="bg-white rounded-xl shadow-sm border p-6 md:p-8 mb-6"
+    initial={{ opacity: 0, y: 20 }}
+    animate={{ opacity: 1, y: 0 }}
+    transition={{ delay: 0.2 }}
+  >
+    <h2 className="text-xl font-semibold text-gray-800 mb-4 flex items-center">
+      <AlertTriangle className="mr-2 h-5 w-5 text-yellow-600" />
+      Announcements
+    </h2>
+
+    {loadingAnnouncements ? (
+      <p className="text-gray-600">Loading announcements...</p>
+    ) : announcements.length === 0 ? (
+      <p className="text-gray-500">No announcements available</p>
+    ) : (
+      <ul className="space-y-4">
+        {announcements.map((a) => (
+          <motion.li
+            key={a.id}
+            className="bg-yellow-50 border border-yellow-200 p-4 rounded-lg shadow-sm"
+            whileHover={{ scale: 1.02 }}
+          >
+            <h3 className="text-lg font-bold text-yellow-800">{a.title}</h3>
+            <p className="text-gray-700 mt-1">{a.message}</p>
+            <p className="text-xs text-gray-500 mt-2">
+              Posted on {new Date(a.createdAt).toLocaleString()}
+            </p>
+          </motion.li>
+        ))}
+      </ul>
+    )}
+  </motion.div>
+
 
           {/* Profile Section */}
           <motion.div

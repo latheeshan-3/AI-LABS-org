@@ -19,7 +19,9 @@ public class AdminUserDTO {
     private String contactNumber;
     private String hometown;
     private String status;
-    private String accountStatus;   // ACTIVE / SUSPENDED
+    private String accountStatus;
+    private String studentId;
+    private String batchId;  // ACTIVE / SUSPENDED
 
     private List<UserSelectedCourse> enrolledCourses;
 }

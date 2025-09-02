@@ -11,6 +11,7 @@ import com.example.java_backend.repository.CourseRepository;
 import com.example.java_backend.repository.UserRepository;
 import com.example.java_backend.repository.UserSelectedCourseRepository;
 
+
 @Service
 public class UserSelectedCourseService {
 
@@ -68,4 +69,17 @@ public UserSelectedCourse bookCourse(UserSelectedCourseRequest request) {
                 .orElse(false);
     }
 
+   @Transactional
+public UserSelectedCourse updateCertificateUrl(Long enrollmentId, String certificateUrl) {
+    return userSelectedCourseRepository.findById(enrollmentId)
+            .map(enrollment -> {
+                enrollment.setCertificateUrl(certificateUrl);
+                return userSelectedCourseRepository.save(enrollment);
+            })
+            .orElseThrow(() -> new RuntimeException("Enrollment not found"));
 }
+
+}
+
+
+

@@ -19,8 +19,10 @@ interface Course {
 }
 
 // ✅ API base URL
-const API_URL = "http://10.57.131.221:5000/api";
-const COURSES_URL = `${API_URL}/courses`;
+//const API_URL = "http://10.57.131.221:5000/api";
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+const COURSES_URL = `${API_BASE_URL}/courses`;
+  
 
 export default function AdminCoursesPage() {
   const [courses, setCourses] = useState<Course[]>([]);

@@ -9,6 +9,7 @@ import com.example.java_backend.dto.user.UserDTO;
 import com.example.java_backend.mapper.UserMapper;
 import com.example.java_backend.repository.UserRepository;
 
+
 @Service
 public class UserService {
     private final UserRepository userRepository;
@@ -31,7 +32,22 @@ public class UserService {
             user.setSex(updatedUser.getSex());
             user.setDateOfBirth(updatedUser.getDateOfBirth());
             user.setAccountStatus(updatedUser.getaccountStatus);
+            user.setStudentId(updatedUser.getStudentId());
+            user.setBatchId(updatedUser.getBatchId());
             return UserMapper.toDTO(userRepository.save(user));
         }).orElseThrow(() -> new RuntimeException("User not found with id " + id));
     }
+
+    // UserService.java
+public UserDTO updateStudentAndBatchId(Long id, String studentId, String batchId) {
+    return userRepository.findById(id)
+        .map(user -> {
+            user.setStudentId(studentId);
+            user.setBatchId(batchId);
+            return UserMapper.toDTO(userRepository.save(user));
+        })
+        .orElseThrow(() -> new RuntimeException("User not found with id " + id));
+}
+
+
 }

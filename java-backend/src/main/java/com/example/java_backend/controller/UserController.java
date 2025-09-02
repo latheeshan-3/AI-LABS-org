@@ -1,5 +1,7 @@
 package com.example.java_backend.controller;
 
+import java.util.Map;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.java_backend.dto.user.UpdateUserDTO;
 import com.example.java_backend.dto.user.UserDTO;
 import com.example.java_backend.service.UserService;
+
 
 @RestController
 @RequestMapping("/api/users")
@@ -48,4 +51,16 @@ public class UserController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
+
+    @PutMapping("/{id}/ids")
+public ResponseEntity<UserDTO> updateStudentAndBatchId(
+        @PathVariable Long id,
+        @RequestBody Map<String, String> updates) {
+
+    String studentId = updates.get("studentId");
+    String batchId = updates.get("batchId");
+
+    UserDTO updated = userService.updateStudentAndBatchId(id, studentId, batchId);
+    return ResponseEntity.ok(updated);
+}
 }

@@ -16,6 +16,8 @@ public class UserMapper {
         dto.setSex(user.getSex());
         dto.setDateOfBirth(user.getDateOfBirth());
         dto.setAccountStatus(user.getAccountStatus());
+        dto.setStudentId(user.getStudentId()); // ✅ add this
+        dto.setBatchId(user.getBatchId());  
         return dto;
     }
 }
