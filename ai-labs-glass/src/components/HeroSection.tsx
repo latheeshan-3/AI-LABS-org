@@ -9,7 +9,7 @@ const HeroSection = () => {
   const [displayedText, setDisplayedText] = useState("");
   const [isTypingComplete, setIsTypingComplete] = useState(false);
   
-  const fullText = "AI LABS";
+  const fullText = "Senior Gravity";
   const typingSpeed = 100; // milliseconds per character
 
   useEffect(() => {
@@ -33,16 +33,23 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black pt-20">
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-black pt-10 sm:pt-20">
+
       {/* 3D Background */}
       <ThreeBackground />
 
       {/* Foreground Content */}
       <div className="relative z-10 container mx-auto px-6 text-center">
         {/* Animated Typing Title */}
-        <h1 className="text-8xl md:text-[12rem] lg:text-[14rem] font-extrabold mb-6 text-white mx-auto w-fit min-h-[140px] md:min-h-[220px] lg:min-h-[260px] flex items-center justify-center">
-          {displayedText}
-        </h1>
+        <h1
+  className="text-5xl sm:text-6xl md:text-[8rem] lg:text-[12rem] 
+             font-black tracking-tight leading-tight 
+             mb-4 text-white mx-auto w-fit 
+             min-h-[100px] sm:min-h-[140px] md:min-h-[220px] 
+             flex items-center justify-center">
+  {displayedText}
+</h1>
+
 
         <p className="text-lg md:text-xl text-gray-300 mb-10">
           Unlock the power of{" "}
