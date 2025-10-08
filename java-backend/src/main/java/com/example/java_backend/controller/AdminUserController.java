@@ -3,7 +3,6 @@ package com.example.java_backend.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -16,7 +15,7 @@ import com.example.java_backend.service.AdminUserService;
 
 @RestController
 @RequestMapping("/api/admin")
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class AdminUserController {
 
     private final AdminUserService adminUserService;

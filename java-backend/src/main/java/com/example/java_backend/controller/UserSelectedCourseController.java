@@ -1,7 +1,6 @@
 package com.example.java_backend.controller;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +15,7 @@ import com.example.java_backend.service.UserSelectedCourseService;
 
 @RestController
 @RequestMapping("/api/user-selected-courses")
-@CrossOrigin(origins = "*")
+//@CrossOrigin(origins = "*")
 public class UserSelectedCourseController {
 
     private final UserSelectedCourseService userSelectedCourseService;

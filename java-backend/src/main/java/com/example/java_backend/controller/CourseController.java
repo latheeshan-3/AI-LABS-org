@@ -3,7 +3,6 @@ package com.example.java_backend.controller;
 import java.util.List;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,10 +17,10 @@ import com.example.java_backend.service.CourseService;
 
 @RestController
 @RequestMapping("/api/courses")
-@CrossOrigin(origins = {
+/*@CrossOrigin(origins = {
     "http://localhost:8080",
     "http://10.57.131.221:8080"
-})
+})*/
 public class CourseController {
 
     private final CourseService courseService;

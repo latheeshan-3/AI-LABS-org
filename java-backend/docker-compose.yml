@@ -1,0 +1,20 @@
+version: '3.9'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spring_backend
+    ports:
+      - "5000:5000"
+    env_file:
+      - .env
+
+    # You don't need to repeat variables already in .env — Docker automatically loads them.
+    # Keep only those you want to override or define explicitly.
+    environment:
+      SPRING_APPLICATION_NAME: java-backend
+      SERVER_ADDRESS: 0.0.0.0
+
+    restart: unless-stopped

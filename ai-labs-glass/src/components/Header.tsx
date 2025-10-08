@@ -23,7 +23,7 @@ const Header = () => {
     {/* Logo Image */}
     <div className="h-28 w-auto flex items-center">
       <img
-        src="/logo8.png"
+        src="/logo4.png"
         alt="AI Labs Logo"
         className="max-h-28 w-auto object-contain"
       />
