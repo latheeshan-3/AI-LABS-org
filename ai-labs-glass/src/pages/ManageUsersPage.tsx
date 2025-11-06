@@ -5,6 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Search, Send, ArrowLeft, Megaphone, Users, GraduationCap, MapPin, Phone, Mail, Award, X, Check, Edit2, Trash2, Plus, Filter } from 'lucide-react';
 
 interface EnrolledCourse {
   id: number;
@@ -225,61 +226,114 @@ export default function ManageUsersPage() {
   if (loading) return <p className="text-center mt-10">Loading users...</p>;
 
   return (
-    <div className="container mx-auto mt-6 space-y-6">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">👥 Manage Users</h1>
-        <div className="space-x-2">
-          <Button onClick={() => setShowAnnouncementModal(true)}>📢 Send Announcement</Button>
-          <Button onClick={() => navigate("/admin")} variant="outline">Back</Button>
-          <Button onClick={() => navigate("/announcements")} variant="outline">View Annoncement</Button>
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-blue-200 to-yellow-300 p-6">
+    <div className="max-w-7xl mx-auto">
+      {/* Header Section */}
+      <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mb-6">
+        <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 bg-gradient-to-br from-slate-600 to-gray-700 rounded-xl flex items-center justify-center">
+              <Users className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-gray-900">Manage Users</h1>
+              <p className="text-sm text-gray-600">Total: {filteredUsers.length} users</p>
+            </div>
+          </div>
+          
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setShowAnnouncementModal(true)}
+              className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-slate-700 to-gray-800 text-white rounded-xl hover:shadow-lg transition-all duration-200 font-medium"
+            >
+              <Megaphone className="w-4 h-4" />
+              Send Announcement
+            </button>
+            <button 
+              onClick={() => navigate("/announcements")}
+              className="flex items-center gap-2 px-4 py-2.5 bg-gray-200 text-gray-800 rounded-xl hover:bg-gray-300 transition-all duration-200 font-medium"
+            >
+              <Megaphone className="w-4 h-4" />
+              View Announcements
+            </button>
+            <button 
+              onClick={() => navigate("/admin")}
+              className="flex items-center gap-2 px-4 py-2.5 bg-gray-100 text-gray-700 rounded-xl hover:bg-gray-200 transition-all duration-200 font-medium"
+            >
+              <ArrowLeft className="w-4 h-4" />
+              Back
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-col md:flex-row md:items-center md:space-x-4 mb-4">
-        <input
-          type="text"
-          placeholder="Search by user name..."
-          value={searchQuery}
-          onChange={e => setSearchQuery(e.target.value)}
-          className="border rounded px-3 py-2 w-full md:w-1/3"
-        />
+      {/* Filters Section */}
+      <div className="bg-white rounded-2xl shadow-md border border-gray-200 p-6 mb-6">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-lg font-semibold text-gray-900 flex items-center gap-2">
+            <Filter className="w-5 h-5 text-slate-700" />
+            Filters
+          </h2>
+        </div>
+        
+       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+  <div className="relative">
+    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
+    <input
+      type="text"
+      placeholder="Search by name..."
+      value={searchQuery}
+      onChange={(e) => setSearchQuery(e.target.value)}
+      className="w-full pl-10 pr-4 py-3 rounded-xl
+                 bg-gray-800 text-gray-100 placeholder-gray-400
+                 border border-gray-700 focus:ring-2 focus:ring-slate-500 focus:border-transparent
+                 transition-all duration-200"
+    />
+  </div>
 
-        <select
-          value={courseFilter || ""}
-          onChange={e => setCourseFilter(e.target.value || null)}
-          className="border rounded px-3 py-2 mt-2 md:mt-0"
-        >
-          <option value="">All Courses</option>
-          {allCourses.map(title => (
-            <option key={title} value={title}>{title}</option>
-          ))}
-        </select>
 
-        <select
-          value={batchFilter || ""}
-          onChange={e => setBatchFilter(e.target.value || null)}
-          className="border rounded px-3 py-2 mt-2 md:mt-0"
-        >
-          <option value="">All Batches</option>
-          {allBatchIds.map(batch => (
-            <option key={batch} value={batch}>{batch}</option>
-          ))}
-        </select>
+
+          <select
+            value={courseFilter || ""}
+            onChange={e => setCourseFilter(e.target.value || null)}
+            className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all duration-200 bg-white placeholder:text-gray-500 text-gray-900"
+          >
+            <option value="" className="text-gray-900">All Courses</option>
+            {allCourses.map(title => (
+              <option key={title} value={title} className="text-gray-900">{title}</option>
+            ))}
+          </select>
+
+          <select
+            value={batchFilter || ""}
+            onChange={e => setBatchFilter(e.target.value || null)}
+            className="px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-slate-600 focus:border-transparent transition-all duration-200 bg-white placeholder:text-gray-500 text-gray-900"
+          >
+            <option value="" className="text-gray-900">All Batches</option>
+            {allBatchIds.map(batch => (
+              <option key={batch} value={batch} className="text-gray-900">{batch}</option>
+            ))}
+          </select>
+        </div>
       </div>
 
+
       {/* User list */}
+      <div className="space-y-4"> {/* adds gap between cards */}
       {filteredUsers.map(user => (
-        <Card key={user.id} className="p-6">
+        <Card key={user.id} className="p-6 bg-gray-900 hover:bg-gray-800 text-gray-100 transition-colors duration-200 rounded-xl shadow-md border border-gray-700"
+    >
           <CardHeader className="flex justify-between items-center">
             <div>
               <CardTitle>{user.fullName} ({user.role})</CardTitle>
-              <p className="text-sm text-gray-600">{user.email}</p>
+              <p className="text-sm text-green-600">{user.email}</p>
             </div>
             <Badge className={user.accountStatus === "ACTIVE" ? "bg-green-500 text-white" : "bg-red-500 text-white"}>
               {user.accountStatus}
             </Badge>
           </CardHeader>
+          
+
 
           <CardContent>
             <p>📞 {user.contactNumber || "N/A"} | 🏠 {user.hometown || "N/A"}</p>
@@ -367,73 +421,111 @@ export default function ManageUsersPage() {
       ))}
 
       {/* 📢 Announcement Modal */}
-      <Dialog open={showAnnouncementModal} onOpenChange={setShowAnnouncementModal}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>📢 Send Announcement</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-3">
-            <input
-              type="text"
-              placeholder="Title"
-              value={announcementTitle}
-              onChange={e => setAnnouncementTitle(e.target.value)}
-              className="border rounded px-3 py-2 w-full"
-            />
-            <textarea
-              placeholder="Message"
-              value={announcementMessage}
-              onChange={e => setAnnouncementMessage(e.target.value)}
-              className="border rounded px-3 py-2 w-full"
-            />
+<Dialog open={showAnnouncementModal} onOpenChange={setShowAnnouncementModal}>
+  <DialogContent className="bg-gray-900 text-gray-100 border border-gray-700 rounded-xl shadow-lg">
+    <DialogHeader>
+      <DialogTitle className="text-xl font-semibold text-white flex items-center gap-2">
+        📢 Send Announcement
+      </DialogTitle>
+    </DialogHeader>
 
-            <select
-              value={announcementTarget}
-              onChange={e => setAnnouncementTarget(e.target.value as any)}
-              className="border rounded px-3 py-2 w-full"
-            >
-              <option value="ALL">All Users</option>
-              <option value="USERS">Specific Users</option>
-              <option value="BATCH">Specific Batch</option>
-            </select>
+    <div className="space-y-4 mt-2">
+      {/* Title Input */}
+      <input
+        type="text"
+        placeholder="Title"
+        value={announcementTitle}
+        onChange={(e) => setAnnouncementTitle(e.target.value)}
+        className="w-full bg-gray-800 text-gray-100 placeholder-gray-400
+                   border border-gray-700 rounded-lg px-4 py-2
+                   focus:ring-2 focus:ring-slate-500 focus:border-transparent
+                   transition-all duration-200"
+      />
 
-            {announcementTarget === "USERS" && (
-              <div className="border rounded p-2 max-h-40 overflow-y-auto">
-                {users.map(u => (
-                  <label key={u.id} className="flex items-center space-x-2">
-                    <Checkbox
-                      checked={selectedUserIds.includes(u.id)}
-                      onCheckedChange={(checked) => {
-                        setSelectedUserIds(prev =>
-                          checked ? [...prev, u.id] : prev.filter(id => id !== u.id)
-                        );
-                      }}
-                    />
-                    <span>{u.fullName} ({u.email})</span>
-                  </label>
-                ))}
-              </div>
-            )}
+      {/* Message Textarea */}
+      <textarea
+        placeholder="Message"
+        value={announcementMessage}
+        onChange={(e) => setAnnouncementMessage(e.target.value)}
+        className="w-full bg-gray-800 text-gray-100 placeholder-gray-400
+                   border border-gray-700 rounded-lg px-4 py-2 min-h-[100px]
+                   focus:ring-2 focus:ring-slate-500 focus:border-transparent
+                   transition-all duration-200"
+      />
 
-            {announcementTarget === "BATCH" && (
-              <select
-                value={selectedBatch}
-                onChange={e => setSelectedBatch(e.target.value)}
-                className="border rounded px-3 py-2 w-full"
-              >
-                <option value="">Select Batch</option>
-                {allBatchIds.map(batch => (
-                  <option key={batch} value={batch}>{batch}</option>
-                ))}
-              </select>
-            )}
-          </div>
-          <DialogFooter>
-            <Button onClick={handleSendAnnouncement}>Send</Button>
-            <Button variant="outline" onClick={() => setShowAnnouncementModal(false)}>Cancel</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      {/* Target Selector */}
+      <select
+        value={announcementTarget}
+        onChange={(e) => setAnnouncementTarget(e.target.value as "ALL" | "USERS" | "BATCH")}
+        className="w-full bg-gray-800 text-gray-100 border border-gray-700 rounded-lg px-4 py-2
+                   focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-200"
+      >
+        <option value="ALL">All Users</option>
+        <option value="USERS">Specific Users</option>
+        <option value="BATCH">Specific Batch</option>
+      </select>
+
+      {/* User Selection */}
+      {announcementTarget === "USERS" && (
+        <div className="border border-gray-700 rounded-lg p-3 max-h-40 overflow-y-auto bg-gray-800">
+          {users.map((u) => (
+            <label key={u.id} className="flex items-center space-x-2 py-1 text-sm text-gray-200">
+              <Checkbox
+                checked={selectedUserIds.includes(u.id)}
+                onCheckedChange={(checked) => {
+                  setSelectedUserIds((prev) =>
+                    checked ? [...prev, u.id] : prev.filter((id) => id !== u.id)
+                  );
+                }}
+              />
+              <span>
+                {u.fullName} <span className="text-gray-400">({u.email})</span>
+              </span>
+            </label>
+          ))}
+        </div>
+      )}
+
+      {/* Batch Selection */}
+      {announcementTarget === "BATCH" && (
+        <select
+          value={selectedBatch}
+          onChange={(e) => setSelectedBatch(e.target.value)}
+          className="w-full bg-gray-800 text-gray-100 border border-gray-700 rounded-lg px-4 py-2
+                     focus:ring-2 focus:ring-slate-500 focus:border-transparent transition-all duration-200"
+        >
+          <option value="">Select Batch</option>
+          {allBatchIds.map((batch) => (
+            <option key={batch} value={batch}>
+              {batch}
+            </option>
+          ))}
+        </select>
+      )}
     </div>
+
+    {/* Footer Buttons */}
+    <DialogFooter className="mt-4 flex justify-end space-x-3">
+      <Button
+        onClick={handleSendAnnouncement}
+        className="bg-slate-600 hover:bg-slate-700 text-white transition-all duration-200"
+      >
+        Send
+      </Button>
+      <Button
+        variant="outline"
+        onClick={() => setShowAnnouncementModal(false)}
+        className="border-gray-600 text-gray-300 hover:bg-gray-800 transition-all duration-200"
+      >
+        Cancel
+      </Button>
+    </DialogFooter>
+  </DialogContent>
+</Dialog>
+
+    </div>
+    </div>
+     </div>
+
   );
 }

@@ -10,6 +10,7 @@ import com.example.java_backend.model.User;
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmail(String email);
     boolean existsByEmail(String email);
+    Optional<User> findByVerificationToken(String token);
     // repository/UserRepository.java
 List<User> findAllByIdIn(List<Long> ids);
 List<User> findByBatchId(String batchId);

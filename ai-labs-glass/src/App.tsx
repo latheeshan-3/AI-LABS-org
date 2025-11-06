@@ -14,6 +14,7 @@ import AdminCoursesPage from "./pages/AdminCoursesPage";
 import CoursesSection from "./components/CoursesSection";
 import ManageUsersPage from "@/pages/ManageUsersPage";
 import AdminAnnouncementsPage from "./pages/AdminAnnouncementsPage";
+import ProfilePage from "./pages/studentProfilePage";
 
 const queryClient = new QueryClient();
 
@@ -36,6 +37,7 @@ const App = () => (
             <Route path="/courses" element={<CoursesSection />} />
              <Route path="/admin/users" element={<ManageUsersPage />} />
              <Route path="/announcements" element={<AdminAnnouncementsPage/>} />
+              <Route path="/profile" element={<ProfilePage />} /> 
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

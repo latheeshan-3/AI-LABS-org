@@ -27,6 +27,10 @@ public class User {
 
     private String password;
 
+    // New verification-related fields
+    private boolean isVerified = false;
+    private String verificationToken;
+
     // New fields
     private String hometown;
     private String contactNumber;

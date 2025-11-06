@@ -20,4 +20,7 @@ public class UserDTO {
     private String accountStatus;
     private String studentId;
     private String batchId;
+    private boolean isVerified; 
+
+   
 }

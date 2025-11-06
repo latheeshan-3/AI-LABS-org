@@ -53,38 +53,66 @@ export default function AdminAnnouncementsPage() {
 
   if (loading) return <p className="text-center mt-10">Loading announcements...</p>;
 
-  return (
-    <div className="container mx-auto mt-6 space-y-6">
-      <div className="flex justify-between items-center mb-4">
-        <h1 className="text-2xl font-bold">📢 Manage Announcements</h1>
-        <Button onClick={() => navigate("/admin")} variant="outline">Back</Button>
-      </div>
+ return (
+  <div className="container mx-auto mt-8 space-y-6 px-4">
+    {/* Header Section */}
+    <div className="flex justify-between items-center mb-6">
+      <h1 className="text-3xl font-bold text-white">📢 Manage Announcements</h1>
+      <Button
+        onClick={() => navigate("/admin")}
+        variant="outline"
+        className="border-gray-600 text-gray-200 hover:bg-gray-700"
+      >
+        Back
+      </Button>
+    </div>
 
-      {announcements.length === 0 ? (
-        <p className="text-center text-gray-500">No announcements yet.</p>
-      ) : (
-        announcements.map(ann => (
-          <Card key={ann.id} className="p-4">
-            <CardHeader className="flex justify-between items-center">
+    {/* No Announcements */}
+    {announcements.length === 0 ? (
+      <p className="text-center text-gray-400 italic">No announcements yet.</p>
+    ) : (
+      <div className="space-y-4">
+        {announcements.map((ann) => (
+          <Card
+            key={ann.id}
+            className="bg-gray-900 hover:bg-gray-800 transition-colors duration-200 border border-gray-700 text-gray-100 rounded-xl shadow-md"
+          >
+            <CardHeader className="flex justify-between items-start">
               <div>
-                <CardTitle>{ann.title}</CardTitle>
-                <p className="text-sm text-gray-600">
-                  Target: {ann.target === "ALL" ? "All Users" : ann.target === "USERS" ? "Specific Users" : `Batch ${ann.batchId}`}
+                <CardTitle className="text-lg font-semibold text-white">
+                  {ann.title}
+                </CardTitle>
+                <p className="text-sm text-gray-400 mt-1">
+                  🎯 Target:{" "}
+                  {ann.target === "ALL"
+                    ? "All Users"
+                    : ann.target === "USERS"
+                    ? "Specific Users"
+                    : `Batch ${ann.batchId}`}
                 </p>
               </div>
-              <Button size="sm" variant="destructive" onClick={() => handleDelete(ann.id)}>
+
+              <Button
+                size="sm"
+                variant="destructive"
+                className="bg-red-600 hover:bg-red-700"
+                onClick={() => handleDelete(ann.id)}
+              >
                 Delete
               </Button>
             </CardHeader>
+
             <CardContent>
-              <p>{ann.message}</p>
-              <p className="text-xs text-gray-500 mt-2">
-                Sent on {new Date(ann.createdAt).toLocaleString()} | By Admin #{ann.createdBy}
+              <p className="text-gray-200">{ann.message}</p>
+              <p className="text-xs text-gray-500 mt-3">
+                🕒 Sent on{" "}
+                {new Date(ann.createdAt).toLocaleString()} &nbsp;|&nbsp; 👤 By Admin #{ann.createdBy}
               </p>
             </CardContent>
           </Card>
-        ))
-      )}
-    </div>
-  );
+        ))}
+      </div>
+    )}
+  </div>
+);
 }

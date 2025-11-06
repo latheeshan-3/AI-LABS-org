@@ -17,7 +17,11 @@ public class UserMapper {
         dto.setDateOfBirth(user.getDateOfBirth());
         dto.setAccountStatus(user.getAccountStatus());
         dto.setStudentId(user.getStudentId()); // ✅ add this
-        dto.setBatchId(user.getBatchId());  
+        dto.setBatchId(user.getBatchId()); 
+        dto.setVerified(user.isVerified());   
+
         return dto;
     }
+
+    
 }

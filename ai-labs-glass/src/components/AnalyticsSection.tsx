@@ -8,21 +8,21 @@ const AnalyticsSection = () => {
     {
       icon: Users,
       label: "Total Viewers",
-      value: 125847,
+      value: 5847,
       change: "+12.5%",
       color: "text-blue-400"
     },
     {
       icon: BookOpen,
       label: "Course Participants",
-      value: 34592,
+      value: 592,
       change: "+8.2%",
       color: "text-green-400"
     },
     {
       icon: Award,
       label: "Certificates Issued",
-      value: 18234,
+      value: 434,
       change: "+15.3%",
       color: "text-yellow-400"
     },

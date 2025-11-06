@@ -2,9 +2,10 @@ import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Star, MapPin, Monitor, Users } from "lucide-react";
+import { Star, MapPin, Monitor, Users, Home } from "lucide-react";
 import { motion } from "framer-motion";
 import AuthModal from "../components/AuthModal";
+
 
 interface Course {
   id: number;
@@ -32,6 +33,7 @@ const CoursesSection = () => {
   const storedUser = localStorage.getItem("user");
   const userId = storedUser ? JSON.parse(storedUser).id : null;
   const API_BASE_URL = import.meta.env.VITE_API_BASE_URL; 
+
 
   useEffect(() => {
     const fetchCourses = async () => {
@@ -68,7 +70,7 @@ const CoursesSection = () => {
     }
 
     if (bookedCourseIds.includes(course.id)) {
-      setMessage("❌ You have already enrolled in this course");
+      setMessage(" You have already enrolled in this course");
       return;
     }
 
@@ -94,7 +96,7 @@ const CoursesSection = () => {
         throw new Error(errorData.message || "Failed to book course");
       }
 
-      setMessage(`✅ You successfully booked: ${course.title}`);
+      setMessage(` You successfully booked: ${course.title}`);
       setBookedCourseIds(prev => [...prev, course.id]); // mark as booked
     } catch (err: any) {
       console.error(err);
@@ -142,6 +144,8 @@ const CoursesSection = () => {
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
+ 
+
           <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-white to-primary-glow bg-clip-text text-transparent">
             Featured Courses
           </h2>
