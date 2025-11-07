@@ -1,6 +1,9 @@
 # ---------- Build Stage ----------
 FROM eclipse-temurin:21-jdk AS builder
 WORKDIR /app
+# Force full rebuild (cache buster)
+RUN echo "Rebuild: $(date)"
+
 
 # Copy Maven wrapper and config
 COPY mvnw pom.xml ./
